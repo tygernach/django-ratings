@@ -16,7 +16,7 @@ class Vote(models.Model):
     content_type    = models.ForeignKey(ContentType, related_name="votes")
     object_id       = models.PositiveIntegerField()
     key             = models.CharField(max_length=32)
-    score           = models.IntegerField()
+    score           = models.FloatField()
     user            = models.ForeignKey(User, blank=True, null=True, related_name="votes")
     ip_address      = models.IPAddressField()
     cookie          = models.CharField(max_length=32, blank=True, null=True)
@@ -53,8 +53,8 @@ class Score(models.Model):
     content_type    = models.ForeignKey(ContentType)
     object_id       = models.PositiveIntegerField()
     key             = models.CharField(max_length=32)
-    score           = models.IntegerField()
-    votes           = models.PositiveIntegerField()
+    score           = models.FloatField()
+    votes           = models.FloatField()
     
     content_object  = generic.GenericForeignKey()
 

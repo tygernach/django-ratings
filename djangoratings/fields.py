@@ -1,4 +1,4 @@
-from django.db.models import IntegerField, PositiveIntegerField
+from django.db.models import IntegerField, PositiveIntegerField, FloatField
 from django.conf import settings
 
 import forms
@@ -132,7 +132,7 @@ class RatingManager(object):
         
         Used to add a rating to an object."""
         try:
-            score = int(score)
+            score = float(score)
         except (ValueError, TypeError):
             raise InvalidRating("%s is not a valid choice for %s" % (score, self.field.name))
         
@@ -321,7 +321,7 @@ class RatingCreator(object):
         else:
             raise TypeError("%s value must be a Rating instance, not '%r'" % (self.field.name, value))
 
-class RatingField(IntegerField):
+class RatingField(FloatField):
     """
     A rating field contributes two columns to the model instead of the standard single column.
     """
@@ -348,7 +348,7 @@ class RatingField(IntegerField):
         cls.add_to_class("%s_votes" % (self.name,), self.votes_field)
 
         # Score sum field
-        self.score_field = IntegerField(
+        self.score_field = FloatField(
             editable=False, default=0, blank=True)
         cls.add_to_class("%s_score" % (self.name,), self.score_field)
 
