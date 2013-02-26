@@ -71,7 +71,7 @@ class RatingManager(object):
         Returns the weighted average rating."""
         if not (self.votes and self.score):
             return 0
-        return float(self.score)/(self.votes+self.field.weight)
+        return float(self.score * self.field.weight)/(self.votes)
     
     def get_opinion_percent(self):
         """get_opinion_percent()
@@ -220,6 +220,7 @@ class RatingManager(object):
                 self.instance.save()
             #setattr(self.instance, self.field.name, Rating(score=self.score, votes=self.votes))
             
+            # @todo deferred total score save?
             defaults = dict(
                 score   = self.score,
                 votes   = self.votes,
@@ -329,7 +330,7 @@ class RatingField(FloatField):
         if 'choices' in kwargs:
             raise TypeError("%s invalid attribute 'choices'" % (self.__class__.__name__,))
         self.can_change_vote = kwargs.pop('can_change_vote', False)
-        self.weight = kwargs.pop('weight', 0)
+        self.weight = kwargs.pop('weight', 1)
         self.range = kwargs.pop('range', 2)
         self.allow_anonymous = kwargs.pop('allow_anonymous', False)
         self.use_cookies = kwargs.pop('use_cookies', False)
