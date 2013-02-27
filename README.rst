@@ -2,7 +2,7 @@
 django-ratings
 ##############
 
-A generic ratings module. The field itself appends two additional fields on the model, for optimization reasons. It adds ``<field>_score``, and ``<field>_votes`` fields, which are both integer fields.
+A generic ratings module. The field itself appends two additional fields on the model, for optimization reasons. It adds ``<field>_score``, and ``<field>_votes`` fields. Score fields are float and votes fields are integer.
 
 ============
 Installation
@@ -29,7 +29,7 @@ The way django-ratings is built requires you to attach a RatingField to your mod
 	from djangoratings.fields import RatingField
 
 	class MyModel(models.Model):
-	    rating = RatingField(range=5) # 5 possible rating values, 1-5
+	    rating = RatingField(range=5) # range of possible rating values, 1-5
 
 Alternatively you could do something like::
 
@@ -37,16 +37,16 @@ Alternatively you could do something like::
 
 	class MyModel(models.Model):
 	    rating = AnonymousRatingField(range=10)
-
-If you'd like to use the built-in weighting methods, to make it appear more difficult for an object
-to obtain a higher rating, you can use the ``weight`` kwarg::
+With both anonymous and users rating fields in your model, you can use ``weight`` kwarg to tune proportions of user's and anonymous' scores in final score. By defaults proportions are: 0.7 for authenticated users' scores and 0.3 for anonymous. For example, if average users' score for object is 5 and average anonymous' score is 3.7 then total average score will be 5*0.7 + 3.7 * 0.3 = 4.61.
 
 	class MyModel(models.Model):
-	    rating = RatingField(range=10, weight=10)
+	    user_rating = RatingField(range=10, weight=0.65)
+            anonymous_rating = AnonymousRatingField(range=10, weight=0.35)
+
 
 ``RatingField`` allows the following options:
 
-* ``range = 2`` - The range in which values are accepted. For example, a range of 2, says there are 2 possible vote scores.
+* ``range = 2`` - The range in which values are accepted. For example, a range of 2, says possible vote scores are from 0 to 2.
 * ``can_change_vote = False`` - Allow the modification of votes that have already been made.
 * ``allow_delete = False`` - Allow the deletion of existent votes. Works only if ``can_change_vote = True``
 * ``allow_anonymous = False`` - Whether to allow anonymous votes.
